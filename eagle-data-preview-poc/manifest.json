@@ -1,0 +1,24 @@
+{
+  "id": "DATAFILEPREVIEW01",
+  "version": "0.1.1",
+  "platform": "all",
+  "arch": "all",
+  "name": "Data File Preview (PoC)",
+  "logo": "/assets/logo.png",
+  "keywords": ["csv", "tsv", "xlsx", "data", "statistics", "spreadsheet"],
+  "devTools": false,
+  "preview": {
+    "csv": {
+      "thumbnail": { "path": "thumbnail/data.js", "size": 400 },
+      "viewer": { "path": "viewer/data.html" }
+    },
+    "tsv": {
+      "thumbnail": { "path": "thumbnail/data.js", "size": 400 },
+      "viewer": { "path": "viewer/data.html" }
+    },
+    "xlsx": {
+      "thumbnail": { "path": "thumbnail/data.js", "size": 400 },
+      "viewer": { "path": "viewer/data.html" }
+    }
+  }
+}

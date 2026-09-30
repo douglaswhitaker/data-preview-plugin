@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Data File Preview</title>
+  <style>
+    :root { color-scheme: light dark; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; overflow: hidden; }
+    #app { display: flex; flex-direction: column; width: 100%; height: 100%; }
+    #toolbar { flex: 0 0 auto; display: flex; gap: 12px; align-items: center; padding: 8px 12px; border-bottom: 1px solid rgba(127,127,127,.35); font-size: 12px; }
+    #filename { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #status { opacity: .7; }
+    #sheet-select { max-width: 220px; }
+    #table-wrap { flex: 1 1 auto; overflow: auto; }
+    table { border-collapse: separate; border-spacing: 0; min-width: 100%; font: 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    th, td { padding: 5px 8px; border-right: 1px solid rgba(127,127,127,.25); border-bottom: 1px solid rgba(127,127,127,.25); white-space: pre; text-align: left; }
+    th { position: sticky; top: 0; z-index: 2; background: Canvas; font-weight: 600; }
+    .rownum { position: sticky; left: 0; z-index: 3; background: Canvas; opacity: .75; text-align: right; user-select: none; }
+    th.rownum { z-index: 4; }
+    #error { padding: 18px; white-space: pre-wrap; font-family: ui-monospace, monospace; color: #c62828; }
+  </style>
+</head>
+<body>
+<div id="app">
+  <div id="toolbar">
+    <span id="filename">Data File Preview</span>
+    <select id="sheet-select" hidden></select>
+    <span id="status">Loading…</span>
+  </div>
+  <div id="table-wrap"><table id="table"><tbody></tbody></table></div>
+  <div id="error" hidden></div>
+</div>
+
+<script>
+(function () {
+  // Eagle format-extension viewers support CommonJS require().
+  // Load the vendored SheetJS bundle directly instead of relying on a
+  // browser global (window.XLSX), which is not exposed in Eagle's viewer.
+  const XLSX = require('../lib/xlsx.full.min.js');
+  const params = new URLSearchParams(window.location.search);
+  const filePath = params.get('path');
+  const filename = filePath ? filePath.split(/[\\/]/).pop() : 'Data File';
+  const filenameEl = document.getElementById('filename');
+  const statusEl = document.getElementById('status');
+  const selectEl = document.getElementById('sheet-select');
+  const tableEl = document.getElementById('table');
+  const errorEl = document.getElementById('error');
+  filenameEl.textContent = filename;
+
+  const MAX_ROWS = 200;
+  const MAX_COLS = 100;
+
+  function showError(err) {
+    statusEl.textContent = 'Preview failed';
+    errorEl.hidden = false;
+    errorEl.textContent = String(err && err.stack || err);
+    tableEl.hidden = true;
+  }
+
+  function renderSheet(ws) {
+    const rows = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, defval: '' });
+    const totalRows = rows.length;
+    const totalCols = rows.reduce((m, r) => Math.max(m, r.length), 0);
+    const shownRows = Math.min(totalRows, MAX_ROWS);
+    const shownCols = Math.min(totalCols, MAX_COLS);
+
+    const frag = document.createDocumentFragment();
+    tableEl.textContent = '';
+    const thead = document.createElement('thead');
+    const hrow = document.createElement('tr');
+    const corner = document.createElement('th');
+    corner.className = 'rownum';
+    corner.textContent = '#';
+    hrow.appendChild(corner);
+    for (let c = 0; c < shownCols; c++) {
+      const th = document.createElement('th');
+      th.textContent = String.fromCharCode(65 + (c % 26)) + (c >= 26 ? Math.floor(c / 26) : '');
+      hrow.appendChild(th);
+    }
+    thead.appendChild(hrow);
+    frag.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    for (let r = 0; r < shownRows; r++) {
+      const tr = document.createElement('tr');
+      const rn = document.createElement('td');
+      rn.className = 'rownum';
+      rn.textContent = String(r + 1);
+      tr.appendChild(rn);
+      const row = rows[r] || [];
+      for (let c = 0; c < shownCols; c++) {
+        const td = document.createElement('td');
+        td.textContent = row[c] == null ? '' : String(row[c]);
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    }
+    frag.appendChild(tbody);
+    tableEl.appendChild(frag);
+    statusEl.textContent = `${totalRows.toLocaleString()} rows × ${totalCols.toLocaleString()} columns` +
+      (totalRows > shownRows || totalCols > shownCols ? ` · showing first ${shownRows} × ${shownCols}` : '');
+  }
+
+  async function load() {
+    if (!filePath) throw new Error('Eagle did not provide a file path.');
+    // Eagle's preview viewer runs in a Node-enabled Chromium environment.
+    // Read the local file directly; no server or network request is needed.
+    const fs = require('fs');
+    const data = await fs.promises.readFile(filePath);
+    const workbook = XLSX.read(data, { type: 'buffer', cellStyles: false, cellHTML: false, cellFormula: false });
+
+    selectEl.hidden = workbook.SheetNames.length <= 1;
+    workbook.SheetNames.forEach((name, i) => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      selectEl.appendChild(opt);
+    });
+    selectEl.addEventListener('change', () => renderSheet(workbook.Sheets[selectEl.value]));
+    renderSheet(workbook.Sheets[workbook.SheetNames[0]]);
+  }
+
+  load().catch(showError);
+})();
+</script>
+</body>
+</html>
