@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Code Preview</title>
+  <style>
+    :root { color-scheme: light dark; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; overflow: hidden; }
+    #app { display: flex; flex-direction: column; width: 100%; height: 100%; }
+    #toolbar { flex: 0 0 auto; display: flex; gap: 10px; align-items: center; padding: 8px 12px; border-bottom: 1px solid rgba(127,127,127,.35); font-size: 12px; }
+    #filename { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #language { padding: 2px 6px; border-radius: 4px; background: rgba(127,127,127,.15); font-size: 11px; }
+    #status { opacity: .7; }
+    #code-wrap { flex: 1 1 auto; overflow: auto; }
+    pre { margin: 0; min-width: max-content; padding: 14px 18px; font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; tab-size: 2; }
+    code { white-space: pre; }
+    #error { padding: 18px; white-space: pre-wrap; font-family: ui-monospace, monospace; }
+
+    /* A compact Prism-inspired theme. Keep colors in CSS so the viewer can
+       follow Eagle's light/dark theme without requiring Prism's CSS file. */
+    .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #6a737d; }
+    .token.punctuation { color: #586069; }
+    .token.property, .token.tag, .token.boolean, .token.number, .token.constant,
+    .token.symbol, .token.deleted { color: #005cc5; }
+    .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin,
+    .token.inserted { color: #22863a; }
+    .token.operator, .token.entity, .token.url, .language-css .token.string,
+    .style .token.string { color: #d73a49; }
+    .token.atrule, .token.attr-value, .token.keyword { color: #6f42c1; }
+    .token.function, .token.class-name { color: #6f42c1; }
+    .token.regex, .token.important, .token.variable { color: #e36209; }
+    .token.important, .token.bold { font-weight: 600; }
+    @media (prefers-color-scheme: dark) {
+      .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #8b949e; }
+      .token.punctuation { color: #c9d1d9; }
+      .token.property, .token.tag, .token.boolean, .token.number, .token.constant,
+      .token.symbol, .token.deleted { color: #79c0ff; }
+      .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin,
+      .token.inserted { color: #7ee787; }
+      .token.operator, .token.entity, .token.url, .language-css .token.string,
+      .style .token.string { color: #ff7b72; }
+      .token.atrule, .token.attr-value, .token.keyword { color: #d2a8ff; }
+      .token.function, .token.class-name { color: #d2a8ff; }
+      .token.regex, .token.important, .token.variable { color: #ffa657; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <div id="toolbar">
+    <span id="filename">Code Preview</span>
+    <span id="language">text</span>
+    <span id="status">Loading…</span>
+  </div>
+  <div id="code-wrap"><pre><code id="code"></code></pre></div>
+  <div id="error" hidden></div>
+</div>
+
+<script>
+(function () {
+  // Prism is vendored locally. Eagle's viewer supports CommonJS require(),
+  // which avoids relying on browser globals.
+  const Prism = require('../vendor/prismjs');
+  const loadLanguages = require('../vendor/prismjs/components/');
+  loadLanguages(['r', 'sas', 'sql', 'python', 'javascript', 'typescript', 'markdown', 'stata']);
+
+  const params = new URLSearchParams(window.location.search);
+  const filePath = params.get('path');
+  const filename = filePath ? filePath.split(/[\\/]/).pop() : 'Code File';
+  const filenameEl = document.getElementById('filename');
+  const languageEl = document.getElementById('language');
+  const statusEl = document.getElementById('status');
+  const codeEl = document.getElementById('code');
+  const errorEl = document.getElementById('error');
+  filenameEl.textContent = filename;
+
+  const LANGUAGE_BY_EXTENSION = {
+    r: 'r',
+    sas: 'sas',
+    sql: 'sql',
+    py: 'python',
+    python: 'python',
+    js: 'javascript',
+    mjs: 'javascript',
+    cjs: 'javascript',
+    ts: 'typescript',
+    md: 'markdown',
+    markdown: 'markdown',
+    do: 'stata',
+    ado: 'stata'
+  };
+
+  function getLanguage(path) {
+    const match = path.match(/\.([^.\\/]+)$/);
+    return match ? (LANGUAGE_BY_EXTENSION[match[1].toLowerCase()] || null) : null;
+  }
+
+  function showError(err) {
+    statusEl.textContent = 'Preview failed';
+    errorEl.hidden = false;
+    errorEl.textContent = String(err && err.stack || err);
+    document.getElementById('code-wrap').hidden = true;
+  }
+
+  async function load() {
+    if (!filePath) throw new Error('Eagle did not provide a file path.');
+    const language = getLanguage(filePath);
+    if (!language || !Prism.languages[language]) {
+      throw new Error(`No syntax highlighter is configured for this file type.`);
+    }
+
+    const fs = require('fs');
+    const source = await fs.promises.readFile(filePath, 'utf8');
+    const grammar = Prism.languages[language];
+    codeEl.innerHTML = Prism.highlight(source, grammar, language);
+    languageEl.textContent = language;
+    const lineCount = source.length ? source.split(/\r\n|\r|\n/).length : 0;
+    statusEl.textContent = `${source.length.toLocaleString()} characters · ${lineCount.toLocaleString()} lines`;
+  }
+
+  load().catch(showError);
+})();
+</script>
+</body>
+</html>

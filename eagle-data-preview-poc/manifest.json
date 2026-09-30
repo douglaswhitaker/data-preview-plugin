@@ -1,24 +1,168 @@
 {
   "id": "DATAFILEPREVIEW01",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "platform": "all",
   "arch": "all",
-  "name": "Data File Preview (PoC)",
+  "name": "Data Preview (PoC)",
   "logo": "/assets/logo.png",
-  "keywords": ["csv", "tsv", "xlsx", "data", "statistics", "spreadsheet"],
+  "keywords": [
+    "csv",
+    "tsv",
+    "xlsx",
+    "r",
+    "sas",
+    "sql",
+    "python",
+    "code",
+    "data",
+    "statistics",
+    "spreadsheet"
+  ],
   "devTools": false,
   "preview": {
     "csv": {
-      "thumbnail": { "path": "thumbnail/data.js", "size": 400 },
-      "viewer": { "path": "viewer/data.html" }
+      "thumbnail": {
+        "path": "thumbnail/data.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/data.html"
+      }
     },
     "tsv": {
-      "thumbnail": { "path": "thumbnail/data.js", "size": 400 },
-      "viewer": { "path": "viewer/data.html" }
+      "thumbnail": {
+        "path": "thumbnail/data.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/data.html"
+      }
     },
     "xlsx": {
-      "thumbnail": { "path": "thumbnail/data.js", "size": 400 },
-      "viewer": { "path": "viewer/data.html" }
+      "thumbnail": {
+        "path": "thumbnail/data.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/data.html"
+      }
+    },
+    "r": {
+      "thumbnail": {
+        "path": "thumbnail/code.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/code.html"
+      }
+    },
+    "sas": {
+      "thumbnail": {
+        "path": "thumbnail/code.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/code.html"
+      }
+    },
+    "sql": {
+      "thumbnail": {
+        "path": "thumbnail/code.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/code.html"
+      }
+    },
+    "py": {
+      "thumbnail": {
+        "path": "thumbnail/code.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/code.html"
+      }
+    },
+    "python": {
+      "thumbnail": {
+        "path": "thumbnail/code.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/code.html"
+      }
+    },
+    "js": {
+      "thumbnail": {
+        "path": "thumbnail/code.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/code.html"
+      }
+    },
+    "mjs": {
+      "thumbnail": {
+        "path": "thumbnail/code.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/code.html"
+      }
+    },
+    "cjs": {
+      "thumbnail": {
+        "path": "thumbnail/code.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/code.html"
+      }
+    },
+    "ts": {
+      "thumbnail": {
+        "path": "thumbnail/code.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/code.html"
+      }
+    },
+    "md": {
+      "thumbnail": {
+        "path": "thumbnail/code.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/code.html"
+      }
+    },
+    "markdown": {
+      "thumbnail": {
+        "path": "thumbnail/code.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/code.html"
+      }
+    },
+    "do": {
+      "thumbnail": {
+        "path": "thumbnail/code.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/code.html"
+      }
+    },
+    "ado": {
+      "thumbnail": {
+        "path": "thumbnail/code.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/code.html"
+      }
     }
   }
 }
