@@ -1,6 +1,6 @@
 {
   "id": "DATAFILEPREVIEW01",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "platform": "all",
   "arch": "all",
   "name": "Data Preview (PoC)",
@@ -8,7 +8,12 @@
   "keywords": [
     "csv",
     "tsv",
+    "xls",
     "xlsx",
+    "xlsb",
+    "xlsm",
+    "ods",
+    "numbers",
     "r",
     "sas",
     "sql",
@@ -162,6 +167,51 @@
       },
       "viewer": {
         "path": "viewer/code.html"
+      }
+    },
+    "xls": {
+      "thumbnail": {
+        "path": "thumbnail/data.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/data.html"
+      }
+    },
+    "xlsb": {
+      "thumbnail": {
+        "path": "thumbnail/data.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/data.html"
+      }
+    },
+    "xlsm": {
+      "thumbnail": {
+        "path": "thumbnail/data.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/data.html"
+      }
+    },
+    "ods": {
+      "thumbnail": {
+        "path": "thumbnail/data.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/data.html"
+      }
+    },
+    "numbers": {
+      "thumbnail": {
+        "path": "thumbnail/data.js",
+        "size": 400
+      },
+      "viewer": {
+        "path": "viewer/data.html"
       }
     }
   }

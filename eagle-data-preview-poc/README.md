@@ -8,7 +8,12 @@ Data files:
 
 - CSV
 - TSV
+- XLS
 - XLSX
+- XLSB
+- XLSM
+- ODS
+- Numbers
 
 Syntax-highlighted code/text:
 
@@ -21,7 +26,7 @@ Syntax-highlighted code/text:
 - Markdown (`.md`, `.markdown`)
 - Stata (`.do`, `.ado`)
 
-The data viewer uses **SheetJS Community Edition 0.20.3**, vendored locally. The code viewer uses **PrismJS 1.30.0**, vendored locally. Prism supports hundreds of languages and the viewer loads only the languages needed by this PoC at runtime.
+The data viewer uses **SheetJS Community Edition 0.20.3**, vendored locally. SheetJS CE supports reading all of the registered spreadsheet formats; the viewer uses the same table-rendering path for each. The code viewer uses **PrismJS 1.30.0**, vendored locally. Prism supports hundreds of languages and the viewer loads only the languages needed by this PoC at runtime.
 
 The data thumbnail and code thumbnail are intentionally static for this PoC. Dynamic thumbnails can be considered after the preview plumbing is established.
 
