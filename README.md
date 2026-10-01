@@ -6,8 +6,8 @@ This is a plugin for Eagle to help me organize datasets for teaching statistics 
 
 This plugin adds preview functionality for spreadsheet-type datasets (via SheetJS) and plaintext code files with syntax highlighting (via PrismJS). Currently supported file types:
 
-Data: .csv, .tsv, .xlsx, .xls, .xlsb, .xlsm, .ods, numbers
-Code: R, SAS, Python, and a few others
+* Data: .csv, .tsv, .xlsx, .xls, .xlsb, .xlsm, .ods, numbers
+* Code: R, SAS, Python, and a few others
 
 ### Current Release
 
